@@ -1,4 +1,4 @@
-## Armello Telegram Bot
+## Armello Champion Bot
 
 ## Введение
 
