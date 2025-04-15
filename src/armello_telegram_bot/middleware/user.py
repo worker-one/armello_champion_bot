@@ -45,8 +45,8 @@ class UserMessageMiddleware(BaseMiddleware):
         )
 
         # Log event to the console
-        print(f"message.is_topic_message: {message.is_topic_message} message.message_thread_id not in ... {message.message_thread_id}"), 
-        logger.info(event.dict())
+        #print(f"message.is_topic_message: {message.is_topic_message} message.message_thread_id not in ... {message.message_thread_id}"), 
+        #logger.info(event.dict())
 
         # Set the user data to the data dictionary
         data["user"] = user
