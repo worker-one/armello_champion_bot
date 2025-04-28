@@ -230,7 +230,7 @@ def get_top_players(
         List of player data dictionaries
     """
     logger = logging.getLogger(__name__)
-    logger.info(f"Getting top {limit} players sorted by {sort_by}")
+    logger.info(f"Getting top {limit} players sorted by {sort_by}, offset={offset}, clan_id={clan_id}")
     
     query = db.query(
         PlayerOverallRating,
@@ -240,28 +240,34 @@ def get_top_players(
     )
     
     if clan_id:
-        print(f"Filtering by clan_id: {clan_id}")
+        logger.info(f"Filtering by clan_id: {clan_id}")
         # Filter by players who have played the specified clan
         clan_players = db.query(PlayerClanRating.player_id).filter_by(clan_id=clan_id)
         query = query.filter(PlayerOverallRating.player_id.in_(clan_players))
     
     # Apply sorting
     if sort_by == "win_rate":
+        logger.debug("Sorting by win_rate, filtering players with at least 10 games")
         # For win rate sorting, we need to calculate it in the query
         # We only consider players with at least 10 games for win rate ranking
         query = query.filter((PlayerOverallRating.wins + PlayerOverallRating.losses) >= 10)
         query = query.order_by(desc(PlayerOverallRating.wins / (PlayerOverallRating.wins + PlayerOverallRating.losses)))
     elif sort_by == "wins":
+        logger.debug("Sorting by wins")
         query = query.order_by(desc(PlayerOverallRating.wins))
     else:  # Default to rating
+        logger.debug(f"Sorting by rating (sort_by={sort_by})")
         query = query.order_by(desc(PlayerOverallRating.rating))
     
     # Apply pagination
     results = query.limit(limit).offset(offset).all()
+    logger.debug(f"Query returned {len(results)} results")
     
     # Format results
     top_players = []
+    print(len(results))
     for rating, player in results:
+        logger.info(f"Processing player {player.username} with rating {rating.rating}")
         top_players.append({
             "player_id": player.id,
             "username": player.username,
@@ -276,7 +282,8 @@ def get_top_players(
             "titles": rating.titles,
             "custom_titles": rating.custom_titles
         })
-
+    
+    logger.info(f"Returning {len(top_players)} top players")
     return top_players
 
 

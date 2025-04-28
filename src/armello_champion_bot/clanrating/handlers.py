@@ -1,15 +1,12 @@
-from ast import In
 import logging
 from pathlib import Path
-from tracemalloc import start
 
-from armello_telegram_bot.top import markup
 from omegaconf import OmegaConf
 from telebot import TeleBot, types
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 from telebot.states import State, StatesGroup
 
-from ..common.service import cancel_timeout, start_timeout, user_messages
+from ..common.service import cancel_timeout, user_messages
 from ..database.core import db_session
 from .markup import create_clan_selection_menu_markup
 from .service import format_clan_stats, get_clan_stats, read_clans

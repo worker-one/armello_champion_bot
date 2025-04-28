@@ -58,9 +58,10 @@ def register_handlers(bot: TeleBot):
 
         message_lines = [strings[user.lang].top_players_overall_header]
         for i, player in enumerate(top_players, 1):
-            message_lines.append(
-                f"{i}. @{player['username']} – {player['rating']}: {player['wins']}-{player['losses']}-{player['win_rate']}%"
-            )
+            if player:
+                message_lines.append(
+                    f"{i}. @{player['username']} – {player['rating']}: {player['wins']}-{player['losses']}-{player['win_rate']}%"
+                )
         message_lines.append("\n" + strings[user.lang].top_players_explanation)
         
         title = title_service.get_title(db_session, category="overall")
